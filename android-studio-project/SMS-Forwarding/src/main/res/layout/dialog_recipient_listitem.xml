@@ -1,71 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
+<FrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:fillViewport="true">
+  android:layout_height="wrap_content"
+  android:fitsSystemWindows="true"
+  android:padding="16dp">
 
-  <LinearLayout
-    android:orientation="vertical"
-    android:layout_gravity="left"
+  <ScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
-    android:padding="20dp">
-
-    <TextView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/label_recipient"
-      style="@style/dialog_textview" />
-
-    <EditText
-      android:id="@+id/input_recipient"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="textMultiLine"
-      android:scrollHorizontally="false" />
-
-    <TextView
-      android:layout_marginTop="10dp"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/label_sender"
-      style="@style/dialog_textview" />
-
-    <EditText
-      android:id="@+id/input_sender"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:inputType="textMultiLine"
-      android:scrollHorizontally="false" />
+    android:background="@color/surface_card">
 
     <LinearLayout
-      android:layout_marginTop="10dp"
-      android:orientation="horizontal"
-      android:layout_gravity="center"
-      android:gravity="center"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content">
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="20dp">
 
-      <Button
-        android:id="@+id/button_delete"
-        android:layout_width="wrap_content"
+      <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="@string/label_button_delete" />
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_marginBottom="16dp"
+        android:text="@string/dialog_title_add" />
 
-      <Button
-        android:layout_marginLeft="20dp"
-        android:id="@+id/button_save"
-        android:layout_width="wrap_content"
+      <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="@string/label_button_save" />
+        android:text="@string/label_recipient"
+        style="@style/dialog_textview" />
+
+      <EditText
+        android:id="@+id/input_recipient"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_recipient_hint"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false"
+        android:layout_marginBottom="16dp" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_sender"
+        style="@style/dialog_textview" />
+
+      <EditText
+        android:id="@+id/input_sender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_sender_hint"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/label_sender_helper"
+        style="@style/dialog_helper_text" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_text_filter"
+        style="@style/dialog_textview" />
+
+      <EditText
+        android:id="@+id/input_text_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/label_text_filter_hint"
+        android:textColorHint="@color/text_hint"
+        android:textColor="@color/text_primary"
+        android:inputType="textMultiLine"
+        android:scrollHorizontally="false" />
+
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/label_text_filter_helper"
+        style="@style/dialog_helper_text" />
+
+      <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+          android:id="@+id/button_delete"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:paddingLeft="16dp"
+          android:paddingRight="16dp"
+          android:textColor="@color/button_delete"
+          android:text="@string/label_button_delete"
+          style="?android:attr/borderlessButtonStyle" />
+
+        <Button
+          android:id="@+id/button_save"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="8dp"
+          android:layout_marginStart="8dp"
+          android:paddingLeft="16dp"
+          android:paddingRight="16dp"
+          android:textColor="@color/button_save"
+          android:textStyle="bold"
+          android:text="@string/label_button_save"
+          style="?android:attr/borderlessButtonStyle" />
+
+      </LinearLayout>
 
     </LinearLayout>
-
-  </LinearLayout>
-</ScrollView>
+  </ScrollView>
+</FrameLayout>

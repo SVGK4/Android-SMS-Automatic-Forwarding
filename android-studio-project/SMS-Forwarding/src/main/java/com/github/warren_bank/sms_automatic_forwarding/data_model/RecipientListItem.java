@@ -9,15 +9,24 @@ import java.util.HashSet;
 public final class RecipientListItem {
   public String recipient;
   public String sender;
+  public String textFilter;
 
   public RecipientListItem() {
-    this.recipient = "";
-    this.sender    = "";
+    this.recipient  = "";
+    this.sender     = "";
+    this.textFilter = "";
   }
 
   public RecipientListItem(String recipient, String sender) {
-    this.recipient = recipient;
-    this.sender    = sender;
+    this.recipient  = recipient;
+    this.sender     = sender;
+    this.textFilter = "";
+  }
+
+  public RecipientListItem(String recipient, String sender, String textFilter) {
+    this.recipient  = recipient;
+    this.sender     = sender;
+    this.textFilter = (textFilter == null) ? "" : textFilter;
   }
 
   @Override
@@ -40,6 +49,10 @@ public final class RecipientListItem {
   }
 
   public static ArrayList<String> match(ArrayList<RecipientListItem> arrayList, String sender) {
+    return match(arrayList, sender, null);
+  }
+
+  public static ArrayList<String> match(ArrayList<RecipientListItem> arrayList, String sender, String body) {
     ArrayList<String> allRecipients = new ArrayList<String>();
     RecipientListItem item;
     RecipientListItemCriteria criteria;
@@ -49,7 +62,7 @@ public final class RecipientListItem {
         item = arrayList.get(i);
         criteria = new RecipientListItemCriteria(item);
 
-        criteria.match(sender, allRecipients);
+        criteria.match(sender, body, allRecipients);
       }
       catch(Exception e) { continue; }
     }
@@ -73,27 +86,6 @@ public final class RecipientListItem {
    * ---------------------------------------------------------------------------
    * Parser that supports more advanced values in 'recipient' and 'sender' fields.
    * Fully backwards compatible with older single-value field values.
-   *
-   * 'recipient' field:
-   *   - supports: comma-separated list of values
-   *   - example:
-   *       8001190000,8002290000,8003390000
-   *
-   * 'sender' field:
-   *   - supports: <whitelist>!<blacklist>
-   *   - where:
-   *       * both <whitelist> and <blacklist> are a comma-separated list of values
-   *       * <whitelist> is required
-   *       * <blacklist> is optional
-   *       * the character '!' denotes the start of <blacklist>
-   *   - special case:
-   *       * <whitelist> is '*'
-   *         ..all other values in its comma-separated list are ignored
-   *   - examples:
-   *       8001190000,8002290000,8003390000
-   *       *!8001190000,8002290000,8003390000
-   *       0000!8001190000,8002290000,8003390000
-   *       0000!90000
    * ---------------------------------------------------------------------------
    */
 
@@ -101,6 +93,7 @@ public final class RecipientListItem {
     private String[] recipients;
     private String[] sender_whitelist;
     private String[] sender_blacklist;
+    private String textFilter;
 
     private static String[] splitCSV(String list) {
       return splitCSV(list, /* delimiter */ "[,\\n]+");
@@ -140,6 +133,7 @@ public final class RecipientListItem {
     }
 
     public RecipientListItemCriteria(RecipientListItem item) {
+      this.textFilter = item.textFilter;
       parseRecipient(item.recipient);
       parseSender(item.sender);
 
@@ -185,13 +179,22 @@ public final class RecipientListItem {
     }
 
     // mutates 'allRecipients' list
-    private void match(String sender, ArrayList<String> allRecipients) {
+    private void match(String sender, String body, ArrayList<String> allRecipients) {
       if ((this.recipients == null) || (this.sender_whitelist == null)) return;
+
+      // Check text filter if specified:
+      if (this.textFilter != null && !this.textFilter.trim().isEmpty()) {
+        if (body == null || !body.toLowerCase().contains(this.textFilter.trim().toLowerCase())) {
+          return;
+        }
+      }
+
+      String sanitizedSender = sanitizeInput(sender);
 
       // is sender in blacklist?
       if (this.sender_blacklist != null) {
         for (String bl_value : this.sender_blacklist) {
-          if (sender.endsWith(bl_value)) {
+          if ((sender != null && sender.endsWith(bl_value)) || (!sanitizedSender.isEmpty() && sanitizedSender.endsWith(bl_value))) {
             return;
           }
         }
@@ -199,7 +202,7 @@ public final class RecipientListItem {
 
       // is sender in whitelist?
       for (String wl_value : this.sender_whitelist) {
-        if (wl_value.equals("*") || sender.endsWith(wl_value)) {
+        if (wl_value.equals("*") || (sender != null && sender.endsWith(wl_value)) || (!sanitizedSender.isEmpty() && sanitizedSender.endsWith(wl_value))) {
           allRecipients.addAll(
             Arrays.asList(this.recipients)
           );
